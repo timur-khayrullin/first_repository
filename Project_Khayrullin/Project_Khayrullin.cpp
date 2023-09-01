@@ -7,7 +7,7 @@ int main()
 
     int x;
     cin >> x;
-    cout << x*1511;
+    cout << x*15;
     return 0;
 }
 
