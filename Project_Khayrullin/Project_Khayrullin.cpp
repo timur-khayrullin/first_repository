@@ -82,8 +82,32 @@ void ViewingObjects(const Pipeline pipelines[], int PipeNumber,
 }
 
 
-void EditPipeLine() {
-	cout << "Данные трубы изменены" << endl;
+void EditPipeLine(Pipeline pipelines[], int& PipeNumber) {
+	string name;
+	int NewRepairing;
+	bool pipeFound = false;
+
+	cout << "Введите названия трубы:" << endl;
+	cin >> name;
+	for (int i = 0; i < PipeNumber; i++) {
+		if (pipelines[i].name == name) {
+			cout << "Введите новое значение работоспособности: 1/0" << endl;
+			cin >> NewRepairing;
+			if (pipelines[i].repairing != NewRepairing) {
+				pipelines[i].repairing = NewRepairing;
+				cout << "Данные трубы изменены" << endl;
+			}
+			else {
+				cout << "Данные не были изменены" << endl;
+			}
+			pipeFound = true;
+			break;
+		}
+	}
+	if (!pipeFound) {
+		cout << "Трубы с таким названием не найдено" << endl;
+	}
+
 }
 
 void EditStation() {
@@ -133,7 +157,7 @@ int main() {
 			break;
 		}
 		case 4: {
-			EditPipeLine();
+			EditPipeLine(pipelines, PipeNumber);
 			break;
 		}
 		case 5: {
