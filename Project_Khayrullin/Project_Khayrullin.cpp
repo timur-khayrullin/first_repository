@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 using namespace std;
 
 const int MaxPipelines = 50;
@@ -145,7 +146,8 @@ void EditStation(CompressionStation stations[], int& StationNumber) {
 				cin >> wish;
 				if (wish == "Y") {
 					cout << "Введите количество рабочих цехов:" << endl;
-					cin >> stations[i].ProperAmount;
+					cin >> NewProperAmount;
+					stations[i].ProperAmount = NewProperAmount;
 				}
 				else if (wish == "N") {
 					cout << "Количество рабочих цехов осталось прежним" << endl;
@@ -164,7 +166,23 @@ void EditStation(CompressionStation stations[], int& StationNumber) {
 }
 
 
-void Save() {
+void Save(const Pipeline pipelines[], int PipeNumber,
+	const CompressionStation stations[], int StationNumber) {
+	ofstream file("SavedData.txt");
+	if (!file.is_open()) {
+		cout << "Не удалось открыть файл для записи." << endl;
+		return;
+	}
+	file << "Информация о трубопроводах:" << endl;
+	for (int i = 0; i < PipeNumber; i++) {
+		const Pipeline& pipe = pipelines[i];
+		file << "Имя трубы: " << pipe.name << endl;
+		file << "Длина трубы: " << pipe.length << endl;
+		file << "Диаметр трубы: " << pipe.diameter << endl;
+		file << "В рабочем состоянии: " << (pipe.repairing ? "Да" : "Нет") << endl;
+		file << "--------------------------" << endl;
+	}
+	file.close();
 	cout << "Данные сохранены" << endl;
 }
 
@@ -215,7 +233,7 @@ int main() {
 			break;
 		}
 		case 6: {
-			Save();
+			Save(pipelines, PipeNumber, stations, StationNumber);
 			break;
 		}
 		case 7: {
