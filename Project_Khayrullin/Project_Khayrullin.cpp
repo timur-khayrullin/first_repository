@@ -1,9 +1,11 @@
 #include <iostream>
 #include <fstream>
+#include <string>
 using namespace std;
 
 const int MaxPipelines = 50;
 const int MaxStations = 50;
+const int Limit = 500;
 
 struct Pipeline {
 	string name;
@@ -173,22 +175,62 @@ void Save(const Pipeline pipelines[], int PipeNumber,
 		cout << "Не удалось открыть файл для записи." << endl;
 		return;
 	}
-	file << "Информация о трубопроводах:" << endl;
+	
 	for (int i = 0; i < PipeNumber; i++) {
 		const Pipeline& pipe = pipelines[i];
-		file << "Имя трубы: " << pipe.name << endl;
-		file << "Длина трубы: " << pipe.length << endl;
-		file << "Диаметр трубы: " << pipe.diameter << endl;
-		file << "В рабочем состоянии: " << (pipe.repairing ? "Да" : "Нет") << endl;
-		file << "--------------------------" << endl;
+		file << "Трубопровод:" << endl;
+		file << pipe.name << endl;
+		file << pipe.length << endl;
+		file << pipe.diameter << endl;
+		file << (pipe.repairing ? "Y" : "N") << endl;
+	}
+
+	for (int i = 0; i < StationNumber; i++) {
+		const CompressionStation& station = stations[i];
+		file << "Станция:" << endl;
+		file << station.name << endl;
+		file << station.WorkshopAmount << endl;
+		file << station.ProperAmount << endl;
+		file << station.coefficient << endl;
 	}
 	file.close();
-	cout << "Данные сохранены" << endl;
+	cout << "Данные сохранены в файл SavedData.txt" << endl;
 }
 
-void Download() {
-	cout << "Данные загружены" << endl;
+void LoadData(Pipeline pipelines[], int& PipeNumber,
+	CompressionStation stations[], int& StationNumber) {
+	string line;
+	PipeNumber = 0;
+	StationNumber = 0;
+	string isRepairing;
+	ifstream file("SavedData.txt");
+	if (!file.is_open()) {
+		cout << "Не удалось открыть файл для чтения." << endl;
+		return;
+	}
+	while (getline(file, line)) {
+		if (line == "Трубопровод:") {
+			file >> pipelines[PipeNumber].name;
+			file >> pipelines[PipeNumber].length;
+			file >> pipelines[PipeNumber].diameter;
+			file >> isRepairing;
+			pipelines[PipeNumber].repairing = (isRepairing == "Y" ? true : false);
+			++PipeNumber;
+		}
+		else if(line == "Станция:") {
+			file >> stations[StationNumber].name;
+			file >> stations[StationNumber].WorkshopAmount;
+			file >> stations[StationNumber].ProperAmount;
+			file >> stations[StationNumber].coefficient;
+			++StationNumber;
+		}
+	}
+
+	file.close();
+	cout << "Данные загружены из файла SavedData.txt." << endl;
 }
+
+
 
 int main() {
 	setlocale(LC_ALL, "RUS");
@@ -237,7 +279,7 @@ int main() {
 			break;
 		}
 		case 7: {
-			Download();
+			LoadData(pipelines, PipeNumber, stations, StationNumber);
 			break;
 		}
 		case 0: {
@@ -250,4 +292,5 @@ int main() {
 		system("pause");
 		system("cls");
 	}
+	return 0;
 }
