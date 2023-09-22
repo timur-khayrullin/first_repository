@@ -16,7 +16,7 @@ struct CompressionStation {
 	float coefficient;
 };
 
-void AddPipeLine(Pipeline pipelines[], int& PipeNumber,const int MaxPipelines)
+void AddPipeLine(Pipeline pipelines[], int& PipeNumber,const int& MaxPipelines)
 {
 	string isRepairing;
 	if (PipeNumber >= MaxPipelines) {
@@ -57,7 +57,7 @@ void AddPipeLine(Pipeline pipelines[], int& PipeNumber,const int MaxPipelines)
 	cout << "Труба добавлена." << endl;
 	PipeNumber++;
 }
-void AddStation(CompressionStation stations[], int& StationNumber,const int MaxStations) {
+void AddStation(CompressionStation stations[], int& StationNumber,const int& MaxStations) {
 	if (StationNumber >= MaxStations) {
 		cout << "Достигнуто максимальное количество станций" << endl;
 		return;
