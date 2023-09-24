@@ -13,47 +13,73 @@ struct CompressionStation {
 	string name;
 	int WorkshopAmount;
 	int ProperAmount;
-	float coefficient;
+	double coefficient;
 };
 
-void AddPipeLine(Pipeline pipelines[], int& PipeNumber,const int& MaxPipelines)
+bool Confirm()
 {
-	string isRepairing;
+	string wish;
+	cout << "Y/N?" << endl;
+	while (1)
+	{
+		if (cin >> wish)
+		{
+			if (wish == "Y") {
+				return true;
+			}
+			else if (wish == "N") {
+				return false;
+			}
+		}
+		cout << "Вы ввели неверное значение. Повторите снова" << endl;
+	} 
+}
+int InputInt(int min = 0, int max = 1000)
+{
+	int x;
+	while (!(cin >> x) || x > max || x < min) {
+		cout << "Неверное значение. Попробуйте еще раз:" << endl;
+		cin.clear();
+		cin.ignore(1000, '\n');
+	}
+	return x;
+}
+double InputDouble(int min = 0, double max= 10000000) {
+	double x;
+	while (!(cin >> x) || x > max || x < min) {
+		cout << "Неверное значение. Попробуйте еще раз:" << endl;
+		cin.clear();
+		cin.ignore(1000, '\n');
+	}
+	return x;
+}
+string InputString() {
+	string x;
+	for (;;) {
+		getline(cin, x);
+		if (!x.empty()) {
+			return x;
+		}
+}
+	return x;
+}
+
+
+void AddPipeLine(Pipeline pipelines[], int& PipeNumber, const int& MaxPipelines)
+{
 	if (PipeNumber >= MaxPipelines) {
 		cout << "Достигнуто максимальное количество трубопроводов." << endl;
 		return;
 	}
-
 	Pipeline& NewPipe = pipelines[PipeNumber];
-
 	cout << "Введите имя трубы:" << endl;
-	cin >> NewPipe.name;
+	NewPipe.name = InputString();
 	cout << "Введите длину трубы:" << endl;
-	while (!(cin >> NewPipe.length) || NewPipe.length <= 0) {
-		cin.clear();
-		cin.ignore(1000, '\n');
-		cout << "Вы ввели неверное значение. Повторите снова" << endl;
-	}
+	NewPipe.length = InputDouble(0, 10000000);
 	cout << "Введите диаметр трубы:" << endl;
-	while (!(cin >> NewPipe.diameter) || NewPipe.diameter <= 0 || NewPipe.diameter >= NewPipe.length) {
-		cin.clear();
-		cin.ignore(1000, '\n');
-		cout << "Вы ввели неверное значение. Повторите снова" << endl;
-
-	}
-	do {
-		cout << "В рабочем состоянии? Y/N:" << endl;
-		cin >> isRepairing;
-		if (isRepairing == "Y") {
-			NewPipe.repairing = 1;
-		}
-		else if (isRepairing == "N") {
-			NewPipe.repairing = 0;
-		}
-		else {
-			cout << "Вы ввели неверное значение. Повторите снова" << endl;
-		}
-	} while (isRepairing != "Y" && isRepairing != "N");
+	NewPipe.diameter = InputDouble(0, NewPipe.length);
+	cout << "В рабочем состоянии?" << endl;
+	NewPipe.repairing = Confirm();
 	cout << "Труба добавлена." << endl;
 	PipeNumber++;
 }
@@ -62,36 +88,18 @@ void AddStation(CompressionStation stations[], int& StationNumber,const int& Max
 		cout << "Достигнуто максимальное количество станций" << endl;
 		return;
 	}
-
 	CompressionStation& NewStation = stations[StationNumber];
-
 	cout << "Введите название станции:" << endl;
-	cin >> NewStation.name;
+	NewStation.name = InputString();
 	cout << "Введите количество цехов:" << endl;
-	while (!(cin >> NewStation.WorkshopAmount) || NewStation.WorkshopAmount <= 0) {
-		cin.clear();
-		cin.ignore(1000, '\n');
-		cout << "Вы ввели неверное значение. Повторите снова" << endl;
-
-	}
+	NewStation.WorkshopAmount = InputInt(0, 1000);
 	cout << "Введите количество рабочих цехов:" << endl;
-	while (!(cin >> NewStation.ProperAmount) || NewStation.ProperAmount > NewStation.WorkshopAmount || NewStation.ProperAmount <0) {
-		cin.clear();
-		cin.ignore(1000, '\n');
-		cout << "Вы ввели неверное значение. Повторите снова" << endl;
-
-	}
+	NewStation.ProperAmount = InputInt(0, NewStation.WorkshopAmount);
 	cout << "Введите коэффициент эффективности 0-1:" << endl;
-	while (!(cin >> NewStation.coefficient) || NewStation.coefficient < 0 || NewStation.coefficient >1) {
-		cin.clear();
-		cin.ignore(1000, '\n');
-		cout << "Вы ввели неверное значение. Повторите снова" << endl;
-	}
-
+	NewStation.coefficient = InputDouble(0, 1);
 	cout << "Станция добавлена." << endl;
 	StationNumber++;
 }
-
 void ViewingObjects(const Pipeline pipelines[], int PipeNumber,
 	const CompressionStation stations[], int StationNumber) {
 	cout << "ИНФОРМАЦИЯ О ТРУБАХ:" << endl;
@@ -114,71 +122,57 @@ void ViewingObjects(const Pipeline pipelines[], int PipeNumber,
 	}
 }
 
+void EditPipeLine(Pipeline& Pipe) {
+	cout << "Желаете изменить значение работоспособности?" << endl;
+	if (Confirm()) {
+		Pipe.repairing = !Pipe.repairing;
+	}
+}
 
-void EditPipeLine(Pipeline pipelines[], int& PipeNumber) {
+void ChoosePipe(Pipeline pipelines[],int& PipeNumber) {
+	bool PipeFound = false;
 	string name;
-	string wish;
-	bool pipeFound = false;
-
-	cout << "Введите названия трубы:" << endl;
-	cin >> name;
+	int ChosenPipe;
+	cout << "Введите имя трубы:" << endl;
+	name= InputString();
 	for (int i = 0; i < PipeNumber; i++) {
 		if (pipelines[i].name == name) {
-			if (pipelines[i].repairing == 1) {
-				cout << "На данный момент труба в рабочем состоянии" << endl;
-			}
-			else {
-				cout << "На данный момент труба НЕ в рабочем состоянии" << endl;
-			}
-			cout << "Желаете изменить значение работоспособности? Y/N" << endl;
-			cin >> wish;
-			if (wish == "Y") {
-				pipelines[i].repairing = !pipelines[i].repairing;
-				cout << "Значение работоспособности изменено" << endl;
-			}
-			else if (wish == "N") {
-				cout << "Значение работоспособности не изменено" << endl;
-			}
-			else {
-				cout << "Вы ввели неверное значение. Повторите снова" << endl;
-			}
-			pipeFound = true;
+			cout << (pipelines[i].repairing == 1 ? "В данный момент труба работает" : "В данный момент труба НЕ работает") << endl;
+			ChosenPipe = i;
+			PipeFound = true;
+			EditPipeLine(pipelines[ChosenPipe]);
 			break;
 		}
 	}
-	if (!pipeFound) {
+	if (!PipeFound) {
 		cout << "Трубы с таким названием не найдено" << endl;
 	}
 
+
 }
 
-void EditStation(CompressionStation stations[], int& StationNumber) {
-	int NewProperAmount;
-	string wish;
+void EditStation(CompressionStation& station) {
+	cout << "Желаете изменить количество рабочих цехов?" << endl;
+	if (Confirm())
+	{
+		cout << "Введите количество рабочих цехов:" << endl;
+		station.ProperAmount = InputInt(0, station.WorkshopAmount);
+	}
+}
+
+void ChooseStation(CompressionStation stations[], int& StationNumber) {
 	bool StationFound = false;
 	string name;
+	int ChosenStation;
 	cout << "Введите название станции:" << endl;
-	cin >> name;
+	name = InputString();
 	for (int i = 0; i < StationNumber; i++) {
 		if (stations[i].name == name) {
 			cout << "На данный момент работает цехов " << stations[i].ProperAmount << " из " << stations[i].WorkshopAmount << endl;
-			do {
-				cout << "Желаете изменить количество рабочих цехов? Y/N" << endl;
-				cin >> wish;
-				if (wish == "Y") {
-					cout << "Введите количество рабочих цехов:" << endl;
-					cin >> NewProperAmount;
-					stations[i].ProperAmount = NewProperAmount;
-				}
-				else if (wish == "N") {
-					cout << "Количество рабочих цехов осталось прежним" << endl;
-				}
-				else {
-					cout << "Вы ввели неверное значение. Повторите снова" << endl;
-				}
-				StationFound = true;
-				break;
-			} while (wish != "Y" && wish != "N");
+			ChosenStation = i;
+			StationFound = true;
+			EditStation(stations[ChosenStation]);
+			break;
 		}
 	}
 	if (!StationFound) {
@@ -186,13 +180,11 @@ void EditStation(CompressionStation stations[], int& StationNumber) {
 	}
 }
 
-
 void Save(const Pipeline pipelines[], int PipeNumber,
 	const CompressionStation stations[], int StationNumber) {
 	ofstream file("SavedData.txt");
 	if (!file.is_open()) {
 		cout << "Не удалось открыть файл для записи." << endl;
-		return;
 	}
 	
 	for (int i = 0; i < PipeNumber; i++) {
@@ -243,19 +235,14 @@ void LoadData(Pipeline pipelines[], int& PipeNumber,
 	cout << "Данные загружены из файла SavedData.txt." << endl;
 }
 
-
-
 int main() {
 	setlocale(LC_ALL, "RUS");
-	int Choice;
 	const int MaxPipelines=100;
 	const int MaxStations=100;
 	Pipeline pipelines[MaxPipelines];
 	CompressionStation stations[MaxStations];
 	int PipeNumber = 0;
 	int StationNumber = 0;
-
-
 
 	for (;;) {
 		cout << "Введите 1, чтобы добавить трубу\n";
@@ -267,13 +254,7 @@ int main() {
 		cout << "Введите 7, чтобы загрузить\n";
 		cout << "Введите 0, чтобы ВЫЙТИ\n";
 
-		while (!(cin >> Choice) || Choice >7 || Choice <0) {
-			cin.clear();
-			cin.ignore(1000, '\n');
-			cout << "Попробуйте ещё раз:" << endl;
-		}
-
-		switch (Choice) {
+		switch (InputInt(0, 7)) {
 		case 1: {
 			AddPipeLine(pipelines, PipeNumber, MaxPipelines);
 			break;
@@ -287,11 +268,11 @@ int main() {
 			break;
 		}
 		case 4: {
-			EditPipeLine(pipelines, PipeNumber);
+			ChoosePipe(pipelines, PipeNumber);
 			break;
 		}
 		case 5: {
-			EditStation(stations, StationNumber);
+			ChooseStation(stations, StationNumber);
 			break;
 		}
 		case 6: {
