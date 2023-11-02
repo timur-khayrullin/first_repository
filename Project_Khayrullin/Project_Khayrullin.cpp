@@ -170,9 +170,12 @@ void ChooseStation(unordered_map<string, CompressionStation>& stations) {
 
 void Save(const unordered_map<string, Pipeline>& pipelines,
 	const unordered_map<string, CompressionStation>& stations) {
-	ofstream file("SavedData.txt");
+	string fileName;
+	cout << "Введите имя файла для сохранения данных: ";
+	cin >> fileName;
+	ofstream file(fileName);
 	if (!file.is_open()) {
-		cout << "Не удалось открыть файл для записи" << endl;
+		cout << "Не удалось открыть файл" << endl;
 	}
 	for (const auto& pair : pipelines) {
 		const Pipeline& pipe = pair.second;
@@ -192,16 +195,19 @@ void Save(const unordered_map<string, Pipeline>& pipelines,
 		file << station.coefficient << endl;
 	}
 	file.close();
-	cout << "Данные сохранены в файл SavedData.txt" << endl;
+	cout << "Данные сохранены в файл: " << fileName << endl;
 }
 
 void LoadData(unordered_map<string, Pipeline>& pipelines, unordered_map<string, CompressionStation>& stations) {
+	string fileName;
 	string line;
 	string name;
 	string isRepairing;
-	ifstream file("SavedData.txt");
+	cout << "Введите имя файла для загрузки данных: ";
+	cin >> fileName;
+	ifstream file(fileName);
 	if (!file.is_open()) {
-		cout << "Не удалось открыть файл для чтения." << endl;
+		cout << "Не удалось открыть файл" << endl;
 		return;
 	}
 	while (getline(file, line)) {
@@ -221,7 +227,7 @@ void LoadData(unordered_map<string, Pipeline>& pipelines, unordered_map<string, 
 	}
 
 	file.close();
-	cout << "Данные загружены из файла SavedData.txt." << endl;
+	cout << "Данные загружены из файла: " << fileName << endl;
 }
 
 int main() {
