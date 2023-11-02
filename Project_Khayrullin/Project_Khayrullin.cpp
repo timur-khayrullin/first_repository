@@ -1,16 +1,15 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <unordered_map>
 using namespace std;
 
 struct Pipeline {
-	string name;
 	double length;
 	double diameter;
 	bool repairing;
 };
 struct CompressionStation {
-	string name;
 	int WorkshopAmount;
 	int ProperAmount;
 	double coefficient;
@@ -65,56 +64,61 @@ string InputString() {
 }
 
 
-void AddPipeLine(Pipeline pipelines[], int& PipeNumber, const int& MaxPipelines)
+void AddPipeLine(unordered_map<string, Pipeline>& pipelines)
 {
-	if (PipeNumber >= MaxPipelines) {
-		cout << "Достигнуто максимальное количество трубопроводов." << endl;
+	string name;
+
+	cout << "Введите имя трубы:" << endl;
+	name = InputString();
+	if (pipelines.find(name) != pipelines.end()) {
+		cout << "Труба с таким именем уже существует" << endl;
 		return;
 	}
-	Pipeline& NewPipe = pipelines[PipeNumber];
-	cout << "Введите имя трубы:" << endl;
-	NewPipe.name = InputString();
+	Pipeline NewPipe;
 	cout << "Введите длину трубы:" << endl;
 	NewPipe.length = InputDouble(0, 10000000);
 	cout << "Введите диаметр трубы:" << endl;
 	NewPipe.diameter = InputDouble(0, NewPipe.length);
 	cout << "В рабочем состоянии?" << endl;
 	NewPipe.repairing = Confirm();
+	pipelines[name] = NewPipe;
 	cout << "Труба добавлена." << endl;
-	PipeNumber++;
 }
-void AddStation(CompressionStation stations[], int& StationNumber,const int& MaxStations) {
-	if (StationNumber >= MaxStations) {
-		cout << "Достигнуто максимальное количество станций" << endl;
+void AddStation(unordered_map<string, CompressionStation>& stations) {
+	string name;
+
+	cout << "Введите название станции:" << endl;
+	name = InputString();
+	if (stations.find(name) != stations.end()) {
+		cout << "Труба с таким именем уже существует" << endl;
 		return;
 	}
-	CompressionStation& NewStation = stations[StationNumber];
-	cout << "Введите название станции:" << endl;
-	NewStation.name = InputString();
+	CompressionStation NewStation;
 	cout << "Введите количество цехов:" << endl;
 	NewStation.WorkshopAmount = InputInt(0, 1000);
 	cout << "Введите количество рабочих цехов:" << endl;
 	NewStation.ProperAmount = InputInt(0, NewStation.WorkshopAmount);
 	cout << "Введите коэффициент эффективности 0-1:" << endl;
 	NewStation.coefficient = InputDouble(0, 1);
+	stations[name] = NewStation;
 	cout << "Станция добавлена." << endl;
-	StationNumber++;
+
 }
-void ViewingObjects(const Pipeline pipelines[], int PipeNumber,
-	const CompressionStation stations[], int StationNumber) {
+void ViewingObjects(const unordered_map<string, Pipeline>& pipelines,
+	const unordered_map<string, CompressionStation> stations) {
 	cout << "ИНФОРМАЦИЯ О ТРУБАХ:" << endl;
-	for (int i = 0; i < PipeNumber; i++) {
-		const Pipeline& pipe = pipelines[i];
-		cout << "Имя трубы: " << pipe.name << endl;
+	for (const auto& pair : pipelines) {
+		const Pipeline& pipe = pair.second;
+		cout << "Имя трубы: " << pair.first << endl;
 		cout << "Длина трубы: " << pipe.length << endl;
 		cout << "Диаметр трубы: " << pipe.diameter << endl;
 		cout << "В рабочем состоянии: " << (pipe.repairing ? "Да" : "Нет") << endl;
 		cout << "--------------------------" << endl;
 	}
 	cout << endl << endl << "ИНФОРМАЦИЯ О СТАНЦИЯХ:" << endl;
-	for (int i = 0; i < StationNumber; i++) {
-		const CompressionStation& station = stations[i];
-		cout << "Имя станции: " << station.name << endl;
+	for (const auto& pair : stations) {
+		const CompressionStation& station = pair.second;
+		cout << "Имя станции: " << pair.first << endl;
 		cout << "Количество цехов: " << station.WorkshopAmount << endl;
 		cout << "Количество рабочих цехов: " << station.ProperAmount << endl;
 		cout << "Коэффициент эффективности: " << station.coefficient << endl;
@@ -122,84 +126,67 @@ void ViewingObjects(const Pipeline pipelines[], int PipeNumber,
 	}
 }
 
-void EditPipeLine(Pipeline& Pipe) {
+void EditPipeLine(unordered_map<string, Pipeline>& pipelines, const string& pipeName) {
 	cout << "Желаете изменить значение работоспособности?" << endl;
 	if (Confirm()) {
-		Pipe.repairing = !Pipe.repairing;
+		pipelines[pipeName].repairing = !pipelines[pipeName].repairing;
+		cout << "Значение работоспособности трубы изменено" << endl;
 	}
 }
 
-void ChoosePipe(Pipeline pipelines[],int& PipeNumber) {
-	bool PipeFound = false;
+void ChoosePipe(unordered_map<string, Pipeline>& pipelines) {
 	string name;
-	int ChosenPipe;
 	cout << "Введите имя трубы:" << endl;
-	name= InputString();
-	for (int i = 0; i < PipeNumber; i++) {
-		if (pipelines[i].name == name) {
-			cout << (pipelines[i].repairing == 1 ? "В данный момент труба работает" : "В данный момент труба НЕ работает") << endl;
-			ChosenPipe = i;
-			PipeFound = true;
-			EditPipeLine(pipelines[ChosenPipe]);
-			break;
-		}
+	name = InputString();
+	if (pipelines.find(name) != pipelines.end()) {
+		cout << (pipelines[name].repairing ? "В данный момент труба работает" : "В данный момент труба НЕ работает") << endl;
+		EditPipeLine(pipelines, name);
 	}
-	if (!PipeFound) {
-		cout << "Трубы с таким названием не найдено" << endl;
+	else {
+		cout << "Трубы с таким именем не найдено" << endl;
 	}
-
-
 }
 
-void EditStation(CompressionStation& station) {
+void EditStation(unordered_map<string, CompressionStation>& stations, const string& stationName) {
 	cout << "Желаете изменить количество рабочих цехов?" << endl;
-	if (Confirm())
-	{
+	if (Confirm()) {
 		cout << "Введите количество рабочих цехов:" << endl;
-		station.ProperAmount = InputInt(0, station.WorkshopAmount);
+		stations[stationName].ProperAmount = InputInt(0, stations[stationName].WorkshopAmount);
 	}
 }
 
-void ChooseStation(CompressionStation stations[], int& StationNumber) {
-	bool StationFound = false;
+void ChooseStation(unordered_map<string, CompressionStation>& stations) {
 	string name;
-	int ChosenStation;
 	cout << "Введите название станции:" << endl;
 	name = InputString();
-	for (int i = 0; i < StationNumber; i++) {
-		if (stations[i].name == name) {
-			cout << "На данный момент работает цехов " << stations[i].ProperAmount << " из " << stations[i].WorkshopAmount << endl;
-			ChosenStation = i;
-			StationFound = true;
-			EditStation(stations[ChosenStation]);
-			break;
+	if (stations.find(name) != stations.end()) {
+			cout << "На данный момент работает цехов " << stations[name].ProperAmount << " из " << stations[name].WorkshopAmount << endl;
+			EditStation(stations, name);
 		}
-	}
-	if (!StationFound) {
-		cout << "Станции с таким названием не найдено" << endl;
+	else {
+		cout << "Станции с таким именем не найдено" << endl;
 	}
 }
 
-void Save(const Pipeline pipelines[], int PipeNumber,
-	const CompressionStation stations[], int StationNumber) {
+void Save(const unordered_map<string, Pipeline>& pipelines,
+	const unordered_map<string, CompressionStation>& stations) {
 	ofstream file("SavedData.txt");
 	if (!file.is_open()) {
-		cout << "Не удалось открыть файл для записи." << endl;
+		cout << "Не удалось открыть файл для записи" << endl;
 	}
-	
-	for (int i = 0; i < PipeNumber; i++) {
-		const Pipeline& pipe = pipelines[i];
+	for (const auto& pair : pipelines) {
+		const Pipeline& pipe = pair.second;
 		file << "Трубопровод:" << endl;
-		file << pipe.name << endl;
+		file << pair.first << endl;
 		file << pipe.length << endl;
 		file << pipe.diameter << endl;
 		file << (pipe.repairing ? "Y" : "N") << endl;
 	}
 
-	for (int i = 0; i < StationNumber; i++) {
-		const CompressionStation& station = stations[i];
+	for (const auto& pair : stations) {
+		const CompressionStation& station = pair.second;
 		file << "Станция:" << endl;
-		file << station.name << endl;
+		file << pair.first << endl;
 		file << station.WorkshopAmount << endl;
 		file << station.ProperAmount << endl;
 		file << station.coefficient << endl;
@@ -208,11 +195,9 @@ void Save(const Pipeline pipelines[], int PipeNumber,
 	cout << "Данные сохранены в файл SavedData.txt" << endl;
 }
 
-void LoadData(Pipeline pipelines[], int& PipeNumber,
-	CompressionStation stations[], int& StationNumber) {
+void LoadData(unordered_map<string, Pipeline>& pipelines, unordered_map<string, CompressionStation>& stations) {
 	string line;
-	PipeNumber = 0;
-	StationNumber = 0;
+	string name;
 	string isRepairing;
 	ifstream file("SavedData.txt");
 	if (!file.is_open()) {
@@ -221,13 +206,17 @@ void LoadData(Pipeline pipelines[], int& PipeNumber,
 	}
 	while (getline(file, line)) {
 		if (line == "Трубопровод:") {
-			file >> pipelines[PipeNumber].name >> pipelines[PipeNumber].length >> pipelines[PipeNumber].diameter >> isRepairing;
-			pipelines[PipeNumber].repairing = (isRepairing == "Y" ? true : false);
-			++PipeNumber;
+			Pipeline pipe;
+			getline(file, name);
+			file >> pipe.length >> pipe.diameter >> isRepairing;
+			pipe.repairing = (isRepairing == "Y" ? true : false);
+			pipelines[name] = pipe;
 		}
 		else if(line == "Станция:") {
-			file >> stations[StationNumber].name >> stations[StationNumber].WorkshopAmount >> stations[StationNumber].ProperAmount >>stations[StationNumber].coefficient;
-			++StationNumber;
+			CompressionStation station;
+			getline(file, name);
+			file >> station.WorkshopAmount >> station.ProperAmount >>station.coefficient;
+			stations[name] = station;
 		}
 	}
 
@@ -237,12 +226,8 @@ void LoadData(Pipeline pipelines[], int& PipeNumber,
 
 int main() {
 	setlocale(LC_ALL, "RUS");
-	const int MaxPipelines=100;
-	const int MaxStations=100;
-	Pipeline pipelines[MaxPipelines];
-	CompressionStation stations[MaxStations];
-	int PipeNumber = 0;
-	int StationNumber = 0;
+	unordered_map<string, Pipeline> pipelines;
+	unordered_map<string, CompressionStation> stations;
 
 	for (;;) {
 		cout << "Введите 1, чтобы добавить трубу\n";
@@ -256,31 +241,31 @@ int main() {
 
 		switch (InputInt(0, 7)) {
 		case 1: {
-			AddPipeLine(pipelines, PipeNumber, MaxPipelines);
+			AddPipeLine(pipelines);
 			break;
 		}
 		case 2: {
-			AddStation(stations, StationNumber, MaxStations);
+			AddStation(stations);
 			break;
 		}
 		case 3: {
-			ViewingObjects(pipelines, PipeNumber, stations, StationNumber);
+			ViewingObjects(pipelines, stations);
 			break;
 		}
 		case 4: {
-			ChoosePipe(pipelines, PipeNumber);
+			ChoosePipe(pipelines);
 			break;
 		}
 		case 5: {
-			ChooseStation(stations, StationNumber);
+			ChooseStation(stations);
 			break;
 		}
 		case 6: {
-			Save(pipelines, PipeNumber, stations, StationNumber);
+			Save(pipelines, stations);
 			break;
 		}
 		case 7: {
-			LoadData(pipelines, PipeNumber, stations, StationNumber);
+			LoadData(pipelines, stations);
 			break;
 		}
 		case 0: {
