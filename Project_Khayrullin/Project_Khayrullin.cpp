@@ -4,15 +4,19 @@
 #include <unordered_map>
 using namespace std;
 
-struct Pipeline {
+class Pipeline {
+public:
 	double length;
 	double diameter;
 	bool repairing;
+	Pipeline() :length(10), diameter(1), repairing(false){}
 };
-struct CompressionStation {
+class CompressionStation {
+public:
 	int WorkshopAmount;
 	int ProperAmount;
 	double coefficient;
+	CompressionStation(): WorkshopAmount(10), ProperAmount(5), coefficient(0.5){}
 };
 
 bool Confirm()
