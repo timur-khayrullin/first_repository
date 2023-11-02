@@ -104,8 +104,7 @@ void AddStation(unordered_map<string, CompressionStation>& stations) {
 	cout << "Станция добавлена." << endl;
 
 }
-void ViewingObjects(const unordered_map<string, Pipeline>& pipelines,
-	const unordered_map<string, CompressionStation> stations) {
+void ViewingPipes(const unordered_map<string, Pipeline>& pipelines) {
 	cout << "ИНФОРМАЦИЯ О ТРУБАХ:" << endl;
 	for (const auto& pair : pipelines) {
 		const Pipeline& pipe = pair.second;
@@ -115,6 +114,8 @@ void ViewingObjects(const unordered_map<string, Pipeline>& pipelines,
 		cout << "В рабочем состоянии: " << (pipe.repairing ? "Да" : "Нет") << endl;
 		cout << "--------------------------" << endl;
 	}
+}
+void ViewingStations(const unordered_map<string, CompressionStation> stations) {
 	cout << endl << endl << "ИНФОРМАЦИЯ О СТАНЦИЯХ:" << endl;
 	for (const auto& pair : stations) {
 		const CompressionStation& station = pair.second;
@@ -167,12 +168,7 @@ void ChooseStation(unordered_map<string, CompressionStation>& stations) {
 		cout << "Станции с таким именем не найдено" << endl;
 	}
 }
-
-void Save(const unordered_map<string, Pipeline>& pipelines,
-	const unordered_map<string, CompressionStation>& stations) {
-	string fileName;
-	cout << "Введите имя файла для сохранения данных: ";
-	cin >> fileName;
+void SavePipes(const unordered_map<string, Pipeline>& pipelines, string fileName) {
 	ofstream file(fileName);
 	if (!file.is_open()) {
 		cout << "Не удалось открыть файл" << endl;
@@ -185,7 +181,13 @@ void Save(const unordered_map<string, Pipeline>& pipelines,
 		file << pipe.diameter << endl;
 		file << (pipe.repairing ? "Y" : "N") << endl;
 	}
-
+	file.close();
+}
+void SaveStations(const unordered_map<string, CompressionStation>& stations,string fileName) {
+	ofstream file(fileName, ios::app);
+	if (!file.is_open()) {
+		cout << "Не удалось открыть файл" << endl;
+	}
 	for (const auto& pair : stations) {
 		const CompressionStation& station = pair.second;
 		file << "Станция:" << endl;
@@ -198,13 +200,8 @@ void Save(const unordered_map<string, Pipeline>& pipelines,
 	cout << "Данные сохранены в файл: " << fileName << endl;
 }
 
-void LoadData(unordered_map<string, Pipeline>& pipelines, unordered_map<string, CompressionStation>& stations) {
-	string fileName;
-	string line;
-	string name;
-	string isRepairing;
-	cout << "Введите имя файла для загрузки данных: ";
-	cin >> fileName;
+void LoadPipes(unordered_map<string, Pipeline>& pipelines, string fileName) {
+	string name, line, isRepairing;
 	ifstream file(fileName);
 	if (!file.is_open()) {
 		cout << "Не удалось открыть файл" << endl;
@@ -218,14 +215,24 @@ void LoadData(unordered_map<string, Pipeline>& pipelines, unordered_map<string, 
 			pipe.repairing = (isRepairing == "Y" ? true : false);
 			pipelines[name] = pipe;
 		}
-		else if(line == "Станция:") {
+	}
+	file.close();
+}
+void LoadStations(unordered_map<string, CompressionStation>& stations, string fileName) {
+	string name, line;
+	ifstream file(fileName);
+	if (!file.is_open()) {
+		cout << "Не удалось открыть файл" << endl;
+		return;
+	}
+	while (getline(file, line)) {
+		if (line == "Станция:") {
 			CompressionStation station;
 			getline(file, name);
-			file >> station.WorkshopAmount >> station.ProperAmount >>station.coefficient;
+			file >> station.WorkshopAmount >> station.ProperAmount >> station.coefficient;
 			stations[name] = station;
 		}
 	}
-
 	file.close();
 	cout << "Данные загружены из файла: " << fileName << endl;
 }
@@ -255,7 +262,8 @@ int main() {
 			break;
 		}
 		case 3: {
-			ViewingObjects(pipelines, stations);
+			ViewingPipes(pipelines);
+			ViewingStations(stations);
 			break;
 		}
 		case 4: {
@@ -267,11 +275,19 @@ int main() {
 			break;
 		}
 		case 6: {
-			Save(pipelines, stations);
+			string fileName;
+			cout << "Введите имя файла для сохранения данных: ";
+			cin >> fileName;
+			SavePipes(pipelines, fileName);
+			SaveStations(stations,fileName);
 			break;
 		}
 		case 7: {
-			LoadData(pipelines, stations);
+			string fileName;
+			cout << "Введите имя файла для загрузки данных: ";
+			cin >> fileName;
+			LoadPipes(pipelines, fileName);
+			LoadStations(stations, fileName);
 			break;
 		}
 		case 0: {
