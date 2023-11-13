@@ -21,7 +21,7 @@ int main() {
 	for (;;) {
 		cout << "¬ведите 1, чтобы добавить трубу\n";
 		cout << "¬ведите 2, чтобы добавить станцию\n";
-		cout << "¬ведите 3, чтобы просмотреть все объекты\n";
+		cout << "¬ведите 3, чтобы просмотреть объекты\n";
 		cout << "¬ведите 4, чтобы редактировать трубу\n";
 		cout << "¬ведите 5, чтобы редактировать станцию\n";
 		cout << "¬ведите 6, чтобы сохранить\n";
@@ -40,10 +40,24 @@ int main() {
 			break;
 		}
 		case 3: {
-			Pipeline pipe;
-			pipe.ViewingPipes(pipelines);
-			CompressionStation station;
-			station.ViewingStations(stations);
+			cout << "∆елаете просмотреть все элементы?" << endl;
+			if (Confirm()) {
+				Pipeline pipe;
+				pipe.ViewingPipes(pipelines);
+				CompressionStation station;
+				station.ViewingStations(stations);
+			}
+			else {
+				cout << "1.‘ильтровать трубы"<< "\n" << "2.‘ильтровать компрессорные станции" << endl;
+					if (InputInt(1, 2) == 1) {
+						filterPipe(pipelines);
+					}
+					else {
+						filterStation(stations);
+					}
+				
+			}
+
 			break;
 		}
 		case 4: {
