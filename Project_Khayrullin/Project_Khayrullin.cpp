@@ -5,13 +5,18 @@
 #include "Pipeline.h"
 #include "CompressionStation.h"
 #include "utils.h"
-
+#include <chrono>
+#include <format>
 
 using namespace std;
-
+using namespace chrono;
 
 int main() {
 	setlocale(LC_ALL, "RUS");
+	redirect_output_wrapper cerr_out(cerr);
+	ofstream logfile("logging.txt");
+	if (logfile)
+		cerr_out.redirect(logfile);
 	Pipeline m;
 	unordered_map<int, Pipeline> pipelines;
 	unordered_map<int, CompressionStation> stations;
@@ -20,13 +25,13 @@ int main() {
 		cout << "¬ведите 1, чтобы добавить трубу\n";
 		cout << "¬ведите 2, чтобы добавить станцию\n";
 		cout << "¬ведите 3, чтобы просмотреть объекты\n";
-		cout << "¬ведите 4, чтобы редактировать трубу\n";
-		cout << "¬ведите 5, чтобы редактировать станцию\n";
+		cout << "¬ведите 4, чтобы редактировать трубы\n";
+		cout << "¬ведите 5, чтобы редактировать станции\n";
 		cout << "¬ведите 6, чтобы сохранить\n";
 		cout << "¬ведите 7, чтобы загрузить\n";
 		cout << "¬ведите 0, чтобы ¬џ…“»\n";
 
-		switch (InputInt(0, 7)) {
+		switch (InputValue<int>(0, 7)) {
 		case 1: {
 			Pipeline pipe;
 			pipe.AddPipeLine();
@@ -49,10 +54,9 @@ int main() {
 			}
 			else {
 				cout << "1.‘ильтровать трубы"<< "\n" << "2.‘ильтровать компрессорные станции" << endl;
-					if (InputInt(1, 2) == 1) {
+					if (InputValue<int>(1, 2) == 1) {
 						filterPipe(pipelines);
-					}
-					else {
+					} else {
 						filterStation(stations);
 					}	
 			}

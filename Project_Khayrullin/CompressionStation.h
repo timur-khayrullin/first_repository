@@ -17,7 +17,6 @@ public:
 	CompressionStation();
 	void AddStation();
 	static void ViewingStations(const unordered_map<int, CompressionStation> stations);
-	//void EditStation(unordered_map<int , CompressionStation>& stations, const string& stationName);
 	static void ChangeStation(unordered_map<int, CompressionStation>& stations);
 	static void SaveStations(const unordered_map<int, CompressionStation>& stations, string fileName);
 	void LoadStations(unordered_map<int, CompressionStation>& stations, string fileName);

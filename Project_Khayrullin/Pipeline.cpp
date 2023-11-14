@@ -16,9 +16,9 @@ void Pipeline::AddPipeLine()
 	cout << "Введите имя трубы:" << endl;
 	name = InputString();
 	cout << "Введите длину трубы:" << endl;
-	length = InputDouble(0, 10000000);
+	length = InputValue<double>(0, 100000000);
 	cout << "Введите диаметр трубы:" << endl;
-	diameter = InputDouble(0, length);
+	diameter = InputValue<double>(0, length);
 	cout << "В рабочем состоянии?" << endl;
 	repairing = Confirm();	
 }
@@ -56,19 +56,18 @@ void Pipeline::ViewingPipes(const unordered_map<int, Pipeline>& pipelines) {
 void Pipeline::ChangePipe(unordered_map<int, Pipeline>& pipelines) {
 	string name;
 	cout << "Введите название трубы :" << endl;
+	name = InputString();
 	for (auto& pair : pipelines) {
 		Pipeline& pipe = pair.second;
-		if (pipe.name == InputString()) {
+		if (pipe.name == name) {
 			cout << (pipe.repairing ? "В данный момент труба работает" : "В данный момент труба НЕ работает") << endl;
 			cout << "Желаете изменить значение работоспособности?" << endl;
 			if (Confirm()) {
 				pipe.repairing = !pipe.repairing;
-				cout << "Значение работоспособности трубы изменено" << endl;
+				cout << "Значение работоспособности трубы изменено\n" << endl;
 			}
 		}
-		else {
-			cout << "Трубы с таким именем не найдено" << endl;
-		}
+
 	}
 }
 
@@ -90,6 +89,7 @@ void Pipeline::SavePipes(const unordered_map<int, Pipeline>& pipelines, string f
 }
 void Pipeline::LoadPipes(unordered_map<int, Pipeline>& pipelines, string fileName) {
 	string line, isRepairing;
+	int id;
 	ifstream file(fileName);
 	if (!file.is_open()) {
 		cout << "Не удалось открыть файл" << endl;
@@ -99,10 +99,11 @@ void Pipeline::LoadPipes(unordered_map<int, Pipeline>& pipelines, string fileNam
 		if (line == "Трубопровод:") {
 			Pipeline pipe;
 			file >> id;
+			getline(file, line);
 			getline(file, pipe.name);
 			file >> pipe.length >> pipe.diameter >> isRepairing;
 			pipe.repairing = (isRepairing == "Y" ? true : false);
-			pipelines[id] = pipe;
+			pipelines.insert({ id, pipe});
 		}
 	}
 	file.close();

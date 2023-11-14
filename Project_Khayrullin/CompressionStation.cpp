@@ -17,11 +17,11 @@ void CompressionStation::AddStation() {
 	cout << "Введите название станции:" << endl;
 	name = InputString();
 	cout << "Введите количество цехов:" << endl;
-	WorkshopAmount = InputInt(0, 1000);
+	WorkshopAmount = InputValue<double>(0, 10000);
 	cout << "Введите количество рабочих цехов:" << endl;
-	ProperAmount = InputInt(0,WorkshopAmount);
+	ProperAmount = InputValue<int>(0,WorkshopAmount);
 	cout << "Введите коэффициент эффективности 0-1:" << endl;
-	coefficient = InputDouble(0, 1);
+	coefficient = InputValue<double>(0, 1);
 }
 
 void CompressionStation::ViewingStations(const unordered_map<int, CompressionStation> stations) {
@@ -37,44 +37,17 @@ void CompressionStation::ViewingStations(const unordered_map<int, CompressionSta
 	}
 }
 
-
-//void CompressionStation::EditStation(unordered_map<int, CompressionStation>& stations, const string& stationName) {
-//	cout << "Желаете изменить количество рабочих цехов?" << endl;
-//	if (Confirm()) {
-//		cout << "Введите количество рабочих цехов:" << endl;
-//		for (const auto& pair : stations) {
-//			const CompressionStation& station = pair.second;
-//			if (station.name == stationName) {
-//				station.ProperAmount == InputInt(0, station.WorkshopAmount);
-//			}
-//		}
-//	}
-//}
-//
-//void CompressionStation::ChooseStation(unordered_map<int, CompressionStation>& stations) {
-//	string name;
-//	cout << "Введите название станции:" << endl;
-//	name = InputString();
-//	if (stations.find(name) != stations.end()) {
-//		cout << "На данный момент работает цехов " << stations[name].ProperAmount << " из " << stations[name].WorkshopAmount << endl;
-//		EditStation(stations, name);
-//	}
-//	else {
-//		cout << "Станции с таким именем не найдено" << endl;
-//	}
-//}
 void CompressionStation::ChangeStation(unordered_map<int, CompressionStation>& stations) {
 	string name;
 	cout << "Введите название станции:" << endl;
-	for ( auto& pair : stations) {
-		 CompressionStation& station = pair.second;
-		if (station.name == InputString()) {
+	name = InputString();
+	for (auto& pair : stations) {
+		CompressionStation& station = pair.second;
+		if (station.name == name) {
 			cout << "На данный момент работает цехов " << station.ProperAmount << " из " << station.WorkshopAmount << endl;
 			cout << "Введите количество рабочих цехов:" << endl;
-			station.ProperAmount = InputInt(0, station.WorkshopAmount);
-		}
-		else {
-			cout << "Станции с таким именем не найдено" << endl;
+			station.ProperAmount = InputValue<int>(0, station.WorkshopAmount);
+			cout << endl;
 		}
 	}
 }
@@ -110,9 +83,10 @@ void CompressionStation::LoadStations(unordered_map<int, CompressionStation>& st
 		if (line == "Станция:") {
 			CompressionStation station;
 			file >> id;
+			getline(file, line);
 			getline(file, station.name);
 			file >> station.WorkshopAmount >> station.ProperAmount >> station.coefficient;
-			stations[id] = station;
+			stations.insert({ id,station });
 		}
 	}
 	file.close();

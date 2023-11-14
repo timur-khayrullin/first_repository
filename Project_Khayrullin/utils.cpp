@@ -7,6 +7,19 @@
 #include "CompressionStation.h"
 using namespace std;
 
+template <typename T>
+T InputValue(T min, T max) {
+	T x;
+	while (!(cin >> x) || x > max || x < min) {
+		cout << "Неверное значение. Попробуйте еще раз:" << endl;
+		cerr << x << std::endl;
+		cin.clear();
+		cin.ignore(1000, '\n');
+	}
+	cerr << x << endl;
+	return x;
+}
+
 bool Confirm()
 {
 	string wish;
@@ -16,39 +29,24 @@ bool Confirm()
 		if (cin >> wish)
 		{
 			if (wish == "Y") {
+				cerr << wish << endl;
 				return true;
 			}
 			else if (wish == "N") {
+				cerr << wish << endl;
 				return false;
 			}
 		}
 		cout << "Вы ввели неверное значение. Повторите снова" << endl;
 	}
 }
-int InputInt(int min = 0, int max = 1000)
-{
-	int x;
-	while (!(cin >> x) || x > max || x < min) {
-		cout << "Неверное значение. Попробуйте еще раз:" << endl;
-		cin.clear();
-		cin.ignore(1000, '\n');
-	}
-	return x;
-}
-double InputDouble(int min = 0, double max = 10000000) {
-	double x;
-	while (!(cin >> x) || x > max || x < min) {
-		cout << "Неверное значение. Попробуйте еще раз:" << endl;
-		cin.clear();
-		cin.ignore(1000, '\n');
-	}
-	return x;
-}
+
 string InputString() {
 	string x;
 	for (;;) {
 		getline(cin, x);
 		if (!x.empty()) {
+			cerr << x << endl;
 			return x;
 		}
 	}
@@ -58,7 +56,7 @@ void filterPipe(const unordered_map<int, Pipeline>& pipelines) {
 	string name_value;
 	bool repairing_value;
 	cout << "\n1.Фильтровать по имени" << "\n" << "2.Фильтровать по признаку ремонта" << endl;
-	if (InputInt(1, 2) == 1) {
+	if (InputValue<int>(1, 2) == 1) {
 		cout << "Введите имя : " << endl;
 		name_value = InputString();
 		for (const auto& pair : pipelines) {
@@ -93,7 +91,7 @@ void filterStation(const unordered_map<int, CompressionStation> stations) {
 	string name_value;
 	double percent_value;
 	cout << "\n1.Фильтровать по имени" << "\n" << "2.Фильтровать по проценту незадействованных цехов" << endl;
-	if (InputInt(1, 2) == 1) {
+	if (InputValue<int>(1, 2) == 1) {
 		cout << "Введите имя : " << endl;
 		name_value = InputString();
 		for (const auto& pair : stations) {
@@ -110,7 +108,7 @@ void filterStation(const unordered_map<int, CompressionStation> stations) {
 	}
 	else {
 		cout <<"Введите процент незадействованных цехов: "<< endl;
-		percent_value = InputDouble (0, 100);
+		percent_value = InputValue<double>(0, 100);
 		for (const auto& pair : stations) {
 			const CompressionStation& station = pair.second;
 			if (((station.WorkshopAmount - station.ProperAmount) * 100.0 / station.WorkshopAmount) == percent_value) {
