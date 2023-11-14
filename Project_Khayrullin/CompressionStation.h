@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 using namespace std;
 
 class CompressionStation {
@@ -18,6 +19,8 @@ public:
 	void AddStation();
 	static void ViewingStations(const unordered_map<int, CompressionStation> stations);
 	static void ChangeStation(unordered_map<int, CompressionStation>& stations);
+	static unordered_set <int> ChooseIdbyName(const unordered_map<int, CompressionStation>& stations);
+	static void DeleteStation(unordered_map<int, CompressionStation>& stations);
 	static void SaveStations(const unordered_map<int, CompressionStation>& stations, string fileName);
 	void LoadStations(unordered_map<int, CompressionStation>& stations, string fileName);
 };

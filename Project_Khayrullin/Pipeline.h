@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 using namespace std;
 
 class Pipeline {
@@ -17,8 +18,9 @@ public:
 	Pipeline();
 	void AddPipeLine();
 	static void ViewingPipes(const unordered_map<int, Pipeline>& pipelines);
-	//void EditPipeLine(unordered_map<int, Pipeline>& pipelines, const string& pipeName);
 	static void ChangePipe(unordered_map<int, Pipeline>& pipelines);
+	static void DeletePipe(unordered_map<int, Pipeline>& pipelines);
+	static unordered_set <int> ChooseIdbyName(const unordered_map<int, Pipeline>& pipelines);
 	static void SavePipes(const unordered_map<int, Pipeline>& pipelines, string fileName);
 	void LoadPipes(unordered_map<int, Pipeline>& pipelines, string fileName);
 };

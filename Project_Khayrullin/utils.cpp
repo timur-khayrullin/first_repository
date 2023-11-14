@@ -52,6 +52,7 @@ string InputString() {
 	}
 	return x;
 }
+
 void filterPipe(const unordered_map<int, Pipeline>& pipelines) {
 	string name_value;
 	bool repairing_value;
@@ -87,6 +88,7 @@ void filterPipe(const unordered_map<int, Pipeline>& pipelines) {
 		}
 	}
 }
+
 void filterStation(const unordered_map<int, CompressionStation> stations) {
 	string name_value;
 	double percent_value;

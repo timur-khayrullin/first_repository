@@ -17,7 +17,6 @@ int main() {
 	ofstream logfile("logging.txt");
 	if (logfile)
 		cerr_out.redirect(logfile);
-	Pipeline m;
 	unordered_map<int, Pipeline> pipelines;
 	unordered_map<int, CompressionStation> stations;
 
@@ -54,34 +53,30 @@ int main() {
 			}
 			else {
 				cout << "1.Фильтровать трубы"<< "\n" << "2.Фильтровать компрессорные станции" << endl;
-					if (InputValue<int>(1, 2) == 1) {
-						filterPipe(pipelines);
-					} else {
-						filterStation(stations);
-					}	
+				(InputValue<int>(1, 2) == 1) ? filterPipe(pipelines):filterStation(stations);
 			}
 			break;
 		}
 		case 4: {
-			Pipeline::ChangePipe(pipelines);
+			cout << "1.Изменить значения работоспособности\n" << "2.Удалить трубы" << endl;
+			(InputValue<int>(1, 2) == 1) ? Pipeline::ChangePipe(pipelines) : Pipeline::DeletePipe(pipelines);
 			break;
 		}
 		case 5: {
-			CompressionStation::ChangeStation(stations);
+			cout << "1.Изменить количество рабочих цехов\n" << "2.Удалить станции" << endl;
+			(InputValue<int>(1, 2) == 1) ? CompressionStation::ChangeStation(stations) : CompressionStation::DeleteStation(stations);
 			break;
 		}
 		case 6: {
-			string fileName;
 			cout << "Введите имя файла для сохранения данных: ";
-			cin >> fileName;
+			string fileName = InputString();
 			Pipeline::SavePipes(pipelines, fileName);
 			CompressionStation::SaveStations(stations,fileName);
 			break;
 		}
 		case 7: {
-			string fileName;
 			cout << "Введите имя файла для загрузки данных: ";
-			cin >> fileName;
+			string fileName = InputString();
 			Pipeline pipe;
 			pipe.LoadPipes(pipelines, fileName);
 			CompressionStation station;

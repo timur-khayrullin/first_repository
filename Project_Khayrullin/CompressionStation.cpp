@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include "CompressionStation.h"
 #include "utils.h"
+#include <unordered_set>
 using namespace std;
 int CompressionStation::NextId = 1;
 
@@ -12,12 +13,23 @@ CompressionStation::CompressionStation() {
 	NextId += 1;
 }
 
+unordered_set<int> CompressionStation::ChooseIdbyName(const unordered_map<int, CompressionStation>& stations) {
+	cout << "Введите имя объекта/объектов: " << endl;
+	string name = InputString();
+	unordered_set<int> SetOfId;
+	for (const auto& pair : stations) {
+		if (pair.second.name == name) {
+			SetOfId.insert(pair.first);
+		}
+	}
+	return SetOfId;
+}
 
 void CompressionStation::AddStation() {
 	cout << "Введите название станции:" << endl;
 	name = InputString();
 	cout << "Введите количество цехов:" << endl;
-	WorkshopAmount = InputValue<double>(0, 10000);
+	WorkshopAmount = InputValue<int>(0, 10000);
 	cout << "Введите количество рабочих цехов:" << endl;
 	ProperAmount = InputValue<int>(0,WorkshopAmount);
 	cout << "Введите коэффициент эффективности 0-1:" << endl;
@@ -38,16 +50,24 @@ void CompressionStation::ViewingStations(const unordered_map<int, CompressionSta
 }
 
 void CompressionStation::ChangeStation(unordered_map<int, CompressionStation>& stations) {
-	string name;
-	cout << "Введите название станции:" << endl;
-	name = InputString();
-	for (auto& pair : stations) {
-		CompressionStation& station = pair.second;
-		if (station.name == name) {
-			cout << "На данный момент работает цехов " << station.ProperAmount << " из " << station.WorkshopAmount << endl;
-			cout << "Введите количество рабочих цехов:" << endl;
-			station.ProperAmount = InputValue<int>(0, station.WorkshopAmount);
-			cout << endl;
+	unordered_set<int> Ids = ChooseIdbyName(stations);
+	for (const auto& i : Ids) {
+			cout << "На данный момент работает цехов " << stations[i].ProperAmount << " из " << stations[i].WorkshopAmount << endl;
+			cout << "Желаете изменить работоспособность трубы с id=" << i << "?" << endl;
+			if (Confirm()){
+				cout << "Введите количество рабочих цехов:" << endl;
+				stations[i].ProperAmount = InputValue<int>(0, stations[i].WorkshopAmount);
+				cout << "Количество рабочих цехов изменено\n" << endl;
+		}
+	}
+}
+void CompressionStation::DeleteStation(unordered_map<int, CompressionStation>& stations) {
+	unordered_set<int> Ids = ChooseIdbyName(stations);
+	for (auto& i : Ids) {
+		cout << "Желаете удалить станцию с id=" << i << "?" << endl;
+		if (Confirm()) {
+			stations.erase(i);
+			cout << "Станция с Id=" << i << "удалена\n" << endl;
 		}
 	}
 }

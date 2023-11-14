@@ -4,12 +4,24 @@
 #include <unordered_map>
 #include "Pipeline.h"
 #include "utils.h"
+#include <unordered_set>
 using namespace std;
 int Pipeline::NextId = 0;
 
 Pipeline::Pipeline() {
 	this->id = NextId;
 	NextId += 1;
+}
+unordered_set<int> Pipeline::ChooseIdbyName(const unordered_map<int, Pipeline>& pipelines) {
+	cout << "Введите имя объекта/объектов: " << endl;
+	string name = InputString();
+	unordered_set<int> SetOfId;
+	for (const auto& pair : pipelines) {
+		if (pair.second.name == name) {
+			SetOfId.insert(pair.first);
+		}
+	}
+	return SetOfId;
 }
 void Pipeline::AddPipeLine()
 {
@@ -34,42 +46,29 @@ void Pipeline::ViewingPipes(const unordered_map<int, Pipeline>& pipelines) {
 		cout << "--------------------------" << endl;
 	}
 }
-//void Pipeline::EditPipeLine(unordered_map<int, Pipeline>& pipelines, const string& pipeName) {
-//	cout << "Желаете изменить значение работоспособности?" << endl;
-//	if (Confirm()) {
-//		pipelines[pipeName].repairing = !pipelines[pipeName].repairing;
-//		cout << "Значение работоспособности трубы изменено" << endl;
-//	}
-//}
-//void Pipeline::ChoosePipe(unordered_map<int, Pipeline>& pipelines) {
-//	string name;
-//	cout << "Введите имя трубы:" << endl;
-//	name = InputString();
-//	if (pipelines.find(name) != pipelines.end()) {
-//		cout << (pipelines[name].repairing ? "В данный момент труба работает" : "В данный момент труба НЕ работает") << endl;
-//		EditPipeLine(pipelines, name);
-//	}
-//	else {
-//		cout << "Трубы с таким именем не найдено" << endl;
-//	}
-//}
-void Pipeline::ChangePipe(unordered_map<int, Pipeline>& pipelines) {
-	string name;
-	cout << "Введите название трубы :" << endl;
-	name = InputString();
-	for (auto& pair : pipelines) {
-		Pipeline& pipe = pair.second;
-		if (pipe.name == name) {
-			cout << (pipe.repairing ? "В данный момент труба работает" : "В данный момент труба НЕ работает") << endl;
-			cout << "Желаете изменить значение работоспособности?" << endl;
-			if (Confirm()) {
-				pipe.repairing = !pipe.repairing;
-				cout << "Значение работоспособности трубы изменено\n" << endl;
-			}
-		}
 
+void Pipeline::ChangePipe(unordered_map<int, Pipeline>& pipelines) {
+	unordered_set<int> Ids = ChooseIdbyName(pipelines);
+	for (const auto& i : Ids) {
+		cout << (pipelines[i].repairing ? "В данный момент труба работает" : "В данный момент труба НЕ работает") << endl;
+		cout << "Желаете изменить работоспособность трубы с id=" << i << "?" << endl;
+		if (Confirm()) {
+			pipelines[i].repairing = !pipelines[i].repairing;
+			cout << "Значение работоспособности трубы изменено\n" << endl;
+		}
 	}
 }
+void Pipeline::DeletePipe(unordered_map<int, Pipeline>& pipelines) {
+	unordered_set<int> Ids = ChooseIdbyName(pipelines);
+	for (const auto& i : Ids) {
+		cout << "Желаете удалить трубу с id=" << i << "?" << endl;
+		if (Confirm()) {
+			pipelines.erase(i);
+			cout << "Труба с Id=" << i << "удалена\n" << endl;
+		}
+	}
+}
+
 
 void Pipeline::SavePipes(const unordered_map<int, Pipeline>& pipelines, string fileName) {
 	ofstream file(fileName);
