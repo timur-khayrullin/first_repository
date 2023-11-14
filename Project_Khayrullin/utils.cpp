@@ -54,8 +54,7 @@ string InputString() {
 	}
 	return x;
 }
-void filterPipe(const unordered_map<string, Pipeline>& pipelines) {
-	string wish;
+void filterPipe(const unordered_map<int, Pipeline>& pipelines) {
 	string name_value;
 	bool repairing_value;
 	cout << "\n1.Фильтровать по имени" << "\n" << "2.Фильтровать по признаку ремонта" << endl;
@@ -63,9 +62,10 @@ void filterPipe(const unordered_map<string, Pipeline>& pipelines) {
 		cout << "Введите имя : " << endl;
 		name_value = InputString();
 		for (const auto& pair : pipelines) {
-			if (pair.first == name_value) {
-				const Pipeline& pipe = pair.second;
-				cout << "Имя трубы: " << pair.first << endl;
+			const Pipeline& pipe = pair.second;
+			if (pipe.name == name_value) {
+				cout << "Id трубы: " << pair.first << endl;
+				cout << "Имя трубы: " << pipe.name << endl;
 				cout << "Длина трубы: " << pipe.length << endl;
 				cout << "Диаметр трубы: " << pipe.diameter << endl;
 				cout << "В рабочем состоянии: " << (pipe.repairing ? "Да" : "Нет") << endl;
@@ -79,7 +79,8 @@ void filterPipe(const unordered_map<string, Pipeline>& pipelines) {
 		for (const auto& pair : pipelines) {
 			const Pipeline& pipe = pair.second;
 			if (pipe.repairing == repairing_value) {
-				cout << "Имя трубы: " << pair.first << endl;
+				cout << "Id трубы: " << pair.first << endl;
+				cout << "Имя трубы: " << pipe.name << endl;
 				cout << "Длина трубы: " << pipe.length << endl;
 				cout << "Диаметр трубы: " << pipe.diameter << endl;
 				cout << "В рабочем состоянии: " << (pipe.repairing ? "Да" : "Нет") << endl;
@@ -88,8 +89,7 @@ void filterPipe(const unordered_map<string, Pipeline>& pipelines) {
 		}
 	}
 }
-void filterStation(const unordered_map<string, CompressionStation> stations) {
-	string wish;
+void filterStation(const unordered_map<int, CompressionStation> stations) {
 	string name_value;
 	double percent_value;
 	cout << "\n1.Фильтровать по имени" << "\n" << "2.Фильтровать по проценту незадействованных цехов" << endl;
@@ -97,9 +97,10 @@ void filterStation(const unordered_map<string, CompressionStation> stations) {
 		cout << "Введите имя : " << endl;
 		name_value = InputString();
 		for (const auto& pair : stations) {
-			if (pair.first == name_value) {
-				const CompressionStation& station = pair.second;
-				cout << "Имя станции: " << pair.first << endl;
+			const CompressionStation& station = pair.second;
+			if (station.name == name_value) {
+				cout << "Id станции: " << pair.first << endl;
+				cout << "Имя станции: " << station.name << endl;
 				cout << "Количество цехов: " << station.WorkshopAmount << endl;
 				cout << "Количество рабочих цехов: " << station.ProperAmount << endl;
 				cout << "Коэффициент эффективности: " << station.coefficient << endl;
@@ -112,9 +113,9 @@ void filterStation(const unordered_map<string, CompressionStation> stations) {
 		percent_value = InputDouble (0, 100);
 		for (const auto& pair : stations) {
 			const CompressionStation& station = pair.second;
-			cout << ((station.WorkshopAmount - station.ProperAmount) * 100.0 / station.WorkshopAmount)  << endl;
 			if (((station.WorkshopAmount - station.ProperAmount) * 100.0 / station.WorkshopAmount) == percent_value) {
-				cout << "Имя станции: " << pair.first << endl;
+				cout << "Id станции: " << pair.first << endl;
+				cout << "Имя станции: " << station.name << endl;
 				cout << "Количество цехов: " << station.WorkshopAmount << endl;
 				cout << "Количество рабочих цехов: " << station.ProperAmount << endl;
 				cout << "Коэффициент эффективности: " << station.coefficient << endl;

@@ -7,16 +7,14 @@
 #include "utils.h"
 
 
-
 using namespace std;
-
 
 
 int main() {
 	setlocale(LC_ALL, "RUS");
 	Pipeline m;
-	unordered_map<string, Pipeline> pipelines;
-	unordered_map<string, CompressionStation> stations;
+	unordered_map<int, Pipeline> pipelines;
+	unordered_map<int, CompressionStation> stations;
 
 	for (;;) {
 		cout << "Введите 1, чтобы добавить трубу\n";
@@ -31,21 +29,23 @@ int main() {
 		switch (InputInt(0, 7)) {
 		case 1: {
 			Pipeline pipe;
-			pipe.AddPipeLine(pipelines);
+			pipe.AddPipeLine();
+			pipelines.insert({ pipe.getid(), pipe });
+			cout << "Труба добавлена." << endl;
 			break;
 		}
 		case 2: {
 			CompressionStation station;
-			station.AddStation(stations);
+			station.AddStation();
+			stations.insert({ station.getid(), station });
+			cout << "Станция добавлена." << endl;
 			break;
 		}
 		case 3: {
 			cout << "Желаете просмотреть все элементы?" << endl;
 			if (Confirm()) {
-				Pipeline pipe;
-				pipe.ViewingPipes(pipelines);
-				CompressionStation station;
-				station.ViewingStations(stations);
+				Pipeline::ViewingPipes(pipelines);
+				CompressionStation::ViewingStations(stations);
 			}
 			else {
 				cout << "1.Фильтровать трубы"<< "\n" << "2.Фильтровать компрессорные станции" << endl;
@@ -54,30 +54,24 @@ int main() {
 					}
 					else {
 						filterStation(stations);
-					}
-				
+					}	
 			}
-
 			break;
 		}
 		case 4: {
-			Pipeline pipe;
-			pipe.ChoosePipe(pipelines);
+			Pipeline::ChangePipe(pipelines);
 			break;
 		}
 		case 5: {
-			CompressionStation station;
-			station.ChooseStation(stations);
+			CompressionStation::ChangeStation(stations);
 			break;
 		}
 		case 6: {
 			string fileName;
 			cout << "Введите имя файла для сохранения данных: ";
 			cin >> fileName;
-			Pipeline pipe;
-			pipe.SavePipes(pipelines, fileName);
-			CompressionStation station;
-			station.SaveStations(stations,fileName);
+			Pipeline::SavePipes(pipelines, fileName);
+			CompressionStation::SaveStations(stations,fileName);
 			break;
 		}
 		case 7: {
