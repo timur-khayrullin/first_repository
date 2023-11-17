@@ -22,5 +22,5 @@ public:
 	static unordered_set <int> ChooseIdbyName(const unordered_map<int, CompressionStation>& stations);
 	static void DeleteStation(unordered_map<int, CompressionStation>& stations);
 	static void SaveStations(const unordered_map<int, CompressionStation>& stations, string fileName);
-	void LoadStations(unordered_map<int, CompressionStation>& stations, string fileName);
+	static void LoadStations(unordered_map<int, CompressionStation>& stations, string fileName);
 };

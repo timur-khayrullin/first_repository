@@ -22,6 +22,6 @@ public:
 	static void DeletePipe(unordered_map<int, Pipeline>& pipelines);
 	static unordered_set <int> ChooseIdbyName(const unordered_map<int, Pipeline>& pipelines);
 	static void SavePipes(const unordered_map<int, Pipeline>& pipelines, string fileName);
-	void LoadPipes(unordered_map<int, Pipeline>& pipelines, string fileName);
+	static void LoadPipes(unordered_map<int, Pipeline>& pipelines, string fileName);
 };
 

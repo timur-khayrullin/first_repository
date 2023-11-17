@@ -54,7 +54,7 @@ int main() {
 			else {
 				cout << "1.Фильтровать трубы"<< "\n" << "2.Фильтровать компрессорные станции" << endl;
 				(InputValue<int>(1, 2) == 1) ? filterPipe(pipelines):filterStation(stations);
-			}
+			} 
 			break;
 		}
 		case 4: {
@@ -77,10 +77,8 @@ int main() {
 		case 7: {
 			cout << "Введите имя файла для загрузки данных: ";
 			string fileName = InputString();
-			Pipeline pipe;
-			pipe.LoadPipes(pipelines, fileName);
-			CompressionStation station;
-			station.LoadStations(stations, fileName);
+			Pipeline::LoadPipes(pipelines, fileName);
+			CompressionStation::LoadStations(stations, fileName);
 			break;
 		}
 		case 0: {
@@ -90,8 +88,6 @@ int main() {
 			break;
 		}
 		}
-		system("pause");
-		system("cls");
 	}
 	return 0;
 }
