@@ -14,7 +14,7 @@ CompressionStation::CompressionStation() {
 }
 
 unordered_set<int> CompressionStation::ChooseIdbyName(const unordered_map<int, CompressionStation>& stations) {
-	cout << "Введите имя объекта/объектов: " << endl;
+	cout << "Enter object name: " << endl;
 	string name = InputString();
 	unordered_set<int> SetOfId;
 	for (const auto& pair : stations) {
@@ -26,25 +26,25 @@ unordered_set<int> CompressionStation::ChooseIdbyName(const unordered_map<int, C
 }
 
 void CompressionStation::AddStation() {
-	cout << "Введите название станции:" << endl;
+	cout << "Enter sttaion name: " << endl;
 	name = InputString();
-	cout << "Введите количество цехов:" << endl;
+	cout << "Enter workshops amount" << endl;
 	WorkshopAmount = InputValue<int>(0, 10000);
-	cout << "Введите количество рабочих цехов:" << endl;
+	cout << "Enter amount of working workshops" << endl;
 	ProperAmount = InputValue<int>(0,WorkshopAmount);
-	cout << "Введите коэффициент эффективности 0-1:" << endl;
+	cout << "Enter efficiency coefficient 0-1:" << endl;
 	coefficient = InputValue<double>(0, 1);
 }
 
 void CompressionStation::ViewingStations(const unordered_map<int, CompressionStation> stations) {
-	cout << endl << endl << "ИНФОРМАЦИЯ О СТАНЦИЯХ:" << endl;
+	cout << endl << endl << "INFORMATION ABOUT STATIONS:" << endl;
 	for (const auto& pair : stations) {
 		const CompressionStation& station = pair.second;
-		cout << "Id станции: " << pair.first << endl;
-		cout << "Имя станции: " << station.name << endl;
-		cout << "Количество цехов: " << station.WorkshopAmount << endl;
-		cout << "Количество рабочих цехов: " << station.ProperAmount << endl;
-		cout << "Коэффициент эффективности: " << station.coefficient << endl;
+		cout << "Id of station: " << pair.first << endl;
+		cout << "station name: " << station.name << endl;
+		cout << "amount of workshops: " << station.WorkshopAmount << endl;
+		cout << "proper amount of workshops: " << station.ProperAmount << endl;
+		cout << "efficiency coefficient: " << station.coefficient << endl;
 		cout << "--------------------------" << endl;
 	}
 }
@@ -52,22 +52,22 @@ void CompressionStation::ViewingStations(const unordered_map<int, CompressionSta
 void CompressionStation::ChangeStation(unordered_map<int, CompressionStation>& stations) {
 	unordered_set<int> Ids = ChooseIdbyName(stations);
 	for (const auto& i : Ids) {
-			cout << "На данный момент работает цехов " << stations[i].ProperAmount << " из " << stations[i].WorkshopAmount << endl;
-			cout << "Желаете изменить работоспособность трубы с id=" << i << "?" << endl;
+			cout << "At the moment amount of working workshops: " << stations[i].ProperAmount << " from " << stations[i].WorkshopAmount << endl;
+			cout << "Would you like to change the working value of the pipe with id=" << i << "?" << endl;
 			if (Confirm()){
-				cout << "Введите количество рабочих цехов:" << endl;
+				cout << "Enter proper amount of workshops:" << endl;
 				stations[i].ProperAmount = InputValue<int>(0, stations[i].WorkshopAmount);
-				cout << "Количество рабочих цехов изменено\n" << endl;
+				cout << "The number of workshops has been changed\n" << endl;
 		}
 	}
 }
 void CompressionStation::DeleteStation(unordered_map<int, CompressionStation>& stations) {
 	unordered_set<int> Ids = ChooseIdbyName(stations);
 	for (auto& i : Ids) {
-		cout << "Желаете удалить станцию с id=" << i << "?" << endl;
+		cout << "Would you like to delete a station with an id=" << i << "?" << endl;
 		if (Confirm()) {
 			stations.erase(i);
-			cout << "Станция с Id=" << i << "удалена\n" << endl;
+			cout << "Station with Id=" << i << "is deleted\n" << endl;
 		}
 	}
 }
@@ -75,11 +75,11 @@ void CompressionStation::DeleteStation(unordered_map<int, CompressionStation>& s
 void CompressionStation::SaveStations(const unordered_map<int, CompressionStation>& stations, string fileName) {
 	ofstream file(fileName, ios::app);
 	if (!file.is_open()) {
-		cout << "Не удалось открыть файл" << endl;
+		cout << "The file could not be opened" << endl;
 	}
 	for (const auto& pair : stations) {
 		const CompressionStation& station = pair.second;
-		file << "Станция:" << endl;
+		file << "Station:" << endl;
 		file << pair.first << endl;
 		file << station.name << endl;
 		file << station.WorkshopAmount << endl;
@@ -87,7 +87,7 @@ void CompressionStation::SaveStations(const unordered_map<int, CompressionStatio
 		file << station.coefficient << endl;
 	}
 	file.close();
-	cout << "Данные сохранены в файл: " << fileName << endl;
+	cout << "The data is saved from a file: " << fileName << endl;
 }
 
 
@@ -96,11 +96,11 @@ void CompressionStation::LoadStations(unordered_map<int, CompressionStation>& st
 	int id;
 	ifstream file(fileName);
 	if (!file.is_open()) {
-		cout << "Не удалось открыть файл" << endl;
+		cout << "The file could not be opened" << endl;
 		return;
 	}
 	while (getline(file, line)) {
-		if (line == "Станция:") {
+		if (line == "Station:") {
 			CompressionStation station;
 			file >> id;
 			getline(file, line);
@@ -110,5 +110,5 @@ void CompressionStation::LoadStations(unordered_map<int, CompressionStation>& st
 		}
 	}
 	file.close();
-	cout << "Данные загружены из файла: " << fileName << endl;
+	cout << "The data is downloaded from a file: " << fileName << endl;
 }

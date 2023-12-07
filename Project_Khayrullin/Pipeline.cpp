@@ -6,14 +6,14 @@
 #include "utils.h"
 #include <unordered_set>
 using namespace std;
-int Pipeline::NextId = 0;
+int Pipeline::NextId = 1;
 
 Pipeline::Pipeline() {
 	this->id = NextId;
 	NextId += 1;
 }
 unordered_set<int> Pipeline::ChooseIdbyName(const unordered_map<int, Pipeline>& pipelines) {
-	cout << "Введите имя объекта/объектов: " << endl;
+	cout << "Enter object name: " << endl;
 	string name = InputString();
 	unordered_set<int> SetOfId;
 	for (const auto& pair : pipelines) {
@@ -25,24 +25,24 @@ unordered_set<int> Pipeline::ChooseIdbyName(const unordered_map<int, Pipeline>& 
 }
 void Pipeline::AddPipeLine()
 {
-	cout << "Введите имя трубы:" << endl;
+	cout << "Enter pipe name: " << endl;
 	name = InputString();
-	cout << "Введите длину трубы:" << endl;
+	cout << "Enter length of pipe: " << endl;
 	length = InputValue<double>(0, 100000000);
-	cout << "Введите диаметр трубы:" << endl;
+	cout << "Enter diameter of pipe:" << endl;
 	diameter = InputValue<double>(0, length);
-	cout << "В рабочем состоянии?" << endl;
+	cout << "Working?" << endl;
 	repairing = Confirm();	
 }
 
 void Pipeline::ViewingPipes(const unordered_map<int, Pipeline>& pipelines) {
-	cout << "ИНФОРМАЦИЯ О ТРУБАХ:" << endl;
+	cout << "INFORMATION ABOUT PIPES:" << endl;
 	for (const auto& pair : pipelines) {
-		cout << "Id трубы: " << pair.first << endl;
-		cout << "Имя трубы: " << pair.second.name << endl;
-		cout << "Длина трубы: " << pair.second.length << endl;
-		cout << "Диаметр трубы: " << pair.second.diameter << endl;
-		cout << "В рабочем состоянии: " << (pair.second.repairing ? "Да" : "Нет") << endl;
+		cout << "Id of pipe: " << pair.first << endl;
+		cout << "pipe name: " << pair.second.name << endl;
+		cout << "pipe length: " << pair.second.length << endl;
+		cout << "pipe diameter: " << pair.second.diameter << endl;
+		cout << "Working?: " << (pair.second.repairing ? "Yes" : "No") << endl;
 		cout << "--------------------------" << endl;
 	}
 }
@@ -50,21 +50,21 @@ void Pipeline::ViewingPipes(const unordered_map<int, Pipeline>& pipelines) {
 void Pipeline::ChangePipe(unordered_map<int, Pipeline>& pipelines) {
 	unordered_set<int> Ids = ChooseIdbyName(pipelines);
 	for (const auto& i : Ids) {
-		cout << (pipelines[i].repairing ? "В данный момент труба работает" : "В данный момент труба НЕ работает") << endl;
-		cout << "Желаете изменить работоспособность трубы с id=" << i << "?" << endl;
+		cout << (pipelines[i].repairing ? "The pipe is working at the moment" : "The pipe is NOT working at the moment") << endl;
+		cout << "Would you like to change the working value of the pipe with id=" << i << "?" << endl;
 		if (Confirm()) {
 			pipelines[i].repairing = !pipelines[i].repairing;
-			cout << "Значение работоспособности трубы изменено\n" << endl;
+			cout << "Working value is changed\n" << endl;
 		}
 	}
 }
 void Pipeline::DeletePipe(unordered_map<int, Pipeline>& pipelines) {
 	unordered_set<int> Ids = ChooseIdbyName(pipelines);
 	for (const auto& i : Ids) {
-		cout << "Желаете удалить трубу с id=" << i << "?" << endl;
+		cout << "Would you like to delete the pipe with id=" << i << "?" << endl;
 		if (Confirm()) {
 			pipelines.erase(i);
-			cout << "Труба с Id=" << i << "удалена\n" << endl;
+			cout << "Pipe with Id=" << i << "is deleted\n" << endl;
 		}
 	}
 }
@@ -73,11 +73,11 @@ void Pipeline::DeletePipe(unordered_map<int, Pipeline>& pipelines) {
 void Pipeline::SavePipes(const unordered_map<int, Pipeline>& pipelines, string fileName) {
 	ofstream file(fileName);
 	if (!file.is_open()) {
-		cout << "Не удалось открыть файл" << endl;
+		cout << "The file could not be opened" << endl;
 	}
 	for (const auto& pair : pipelines) {
 		const Pipeline& pipe = pair.second;
-		file << "Трубопровод:" << endl;
+		file << "Pipeline:" << endl;
 		file << pair.first << endl;
 		file << pipe.name << endl;
 		file << pipe.length << endl;
@@ -91,11 +91,11 @@ void Pipeline::LoadPipes(unordered_map<int, Pipeline>& pipelines, string fileNam
 	int id;
 	ifstream file(fileName);
 	if (!file.is_open()) {
-		cout << "Не удалось открыть файл" << endl;
+		cout << "The file could not be opened" << endl;
 		return;
 	}
 	while (getline(file, line)) {
-		if (line == "Трубопровод:") {
+		if (line == "Pipeline:") {
 			Pipeline pipe;
 			file >> id;
 			getline(file, line);
