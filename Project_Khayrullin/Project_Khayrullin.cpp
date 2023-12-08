@@ -7,6 +7,7 @@
 #include "utils.h"
 #include <chrono>
 #include <format>
+#include "Network.h"
 
 using namespace std;
 using namespace chrono;
