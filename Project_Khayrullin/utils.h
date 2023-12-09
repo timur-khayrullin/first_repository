@@ -11,6 +11,7 @@ void filterPipe(const unordered_map<int, Pipeline>& pipelines);
 void filterStation(const unordered_map<int, CompressionStation> stations);
 template <typename T> T InputValue(T min, T max);
 string InputString();
+unordered_map<int, Pipeline> FilterPipeByDiameter(const unordered_map<int, Pipeline>& pipelines, int diameter);
 
 class redirect_output_wrapper
 {

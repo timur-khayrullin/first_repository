@@ -140,14 +140,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CompressionStation.cpp" />
-    <ClCompile Include="Network.cpp" />
+    <ClCompile Include="GTN.cpp" />
     <ClCompile Include="Pipeline.cpp" />
     <ClCompile Include="Project_Khayrullin.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CompressionStation.h" />
-    <ClInclude Include="Network.h" />
+    <ClInclude Include="GTN.h" />
     <ClInclude Include="Pipeline.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>

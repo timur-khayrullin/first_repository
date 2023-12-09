@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include "CompressionStation.h"
 #include "utils.h"
+#include "GTN.h"
 #include <unordered_set>
 using namespace std;
 int CompressionStation::NextId = 1;
@@ -61,13 +62,14 @@ void CompressionStation::ChangeStation(unordered_map<int, CompressionStation>& s
 		}
 	}
 }
-void CompressionStation::DeleteStation(unordered_map<int, CompressionStation>& stations) {
+void CompressionStation::DeleteStation(unordered_map<int, CompressionStation>& stations, network& GTNetwork) {
 	unordered_set<int> Ids = ChooseIdbyName(stations);
 	for (auto& i : Ids) {
 		cout << "Would you like to delete a station with an id=" << i << "?" << endl;
 		if (Confirm()) {
 			stations.erase(i);
 			cout << "Station with Id=" << i << "is deleted\n" << endl;
+			network::DeletePipeWithStation(GTNetwork, i);
 		}
 	}
 }

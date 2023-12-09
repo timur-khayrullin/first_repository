@@ -68,7 +68,15 @@ void FilterPipeByRepapair(const unordered_map<int, Pipeline>& pipelines) {
 		}
 	}
 }
-
+unordered_map<int, Pipeline> FilterPipeByDiameter(const unordered_map<int, Pipeline>& pipelines, int diameter) {
+	unordered_map<int, Pipeline> result;
+	for (const auto& pipe : pipelines) {
+		if (pipe.second.diameter == diameter) {
+			result.emplace(pipe.first, pipe.second);
+		}
+	}
+	return result;
+}
 void FilterPipeByName(const unordered_map<int, Pipeline>& pipelines) {
 	cout << "Enter name : " << endl;
 	string name_value = InputString();
